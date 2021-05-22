@@ -1,8 +1,8 @@
 from questions import QUESTIONS
+from babel.numbers import format_currency
 
 
 def isAnswerCorrect(question, answer):
-
     '''
     :param question: question (Type JSON)
     :param answer:   user's choice for the answer (Type INT)
@@ -11,11 +11,10 @@ def isAnswerCorrect(question, answer):
         False if the answer is incorrect
     '''
 
-    return True if answer == 2 else False      #remove this
+    return True if answer == question['answer'] else False  # remove this
 
 
 def lifeLine(ques):
-
     '''
     :param ques: The question for which the lifeline is asked for. (Type JSON)
     :return: delete the key for two incorrect options and return the new ques value. (Type JSON)
@@ -46,27 +45,63 @@ def kbc():
 
     #  Display a welcome message only once to the user at the start of the game.
     #  For each question, display the prize won until now and available life line.
-    # For now, the below code works for only one question without LIFE-LINE and QUIT checks
+    #  For now, the below code works for only one question without LIFE-LINE and QUIT checks
 
-    print(f'\tQuestion 1: {QUESTIONS[0]["name"]}' )
-    print(f'\t\tOptions:')
-    print(f'\t\t\tOption 1: {QUESTIONS[0]["option1"]}')
-    print(f'\t\t\tOption 2: {QUESTIONS[0]["option2"]}')
-    print(f'\t\t\tOption 3: {QUESTIONS[0]["option3"]}')
-    print(f'\t\t\tOption 4: {QUESTIONS[0]["option4"]}')
-    ans = input('Your choice ( 1-4 ) : ')
+    prize = 0
+    minimum_prize = 0
+    print("\t\t\t* * WELCOME TO KBC!! * *")
 
-    # check for the input validations
+    for i in range(15):
+        if i == 5:
+            minimum_prize = 10000
+            print("CONGRATULATIONS YOU HAVE CROSSED 1st LEVEL")
+            print(f'Minimum Prize: {format_currency(minimum_prize, "INR", locale="en_IN")}')
+        if i == 10:
+            minimum_prize = 320000
+            print("CONGRATULATIONS YOU HAVE CROSSED 2nd LEVEL")
+            print(f'Minimum Prize: {format_currency(minimum_prize, "INR", locale="en_IN")}')
 
-    if isAnswerCorrect(QUESTIONS[0], int(ans) ):
-        # print the total money won.
-        # See if the user has crossed a level, print that if yes
-        print('\nCorrect !')
+        print(f'\nPrize for Next Question: {format_currency(QUESTIONS[i]["money"], "INR", locale="en_IN")}')
+        print(f'Question {i + 1}: {QUESTIONS[i]["name"]}')
+        print(f'\tOptions:')
+        print(f'\t\tOption 1: {QUESTIONS[i]["option1"]}')
+        print(f'\t\tOption 2: {QUESTIONS[i]["option2"]}')
+        print(f'\t\tOption 3: {QUESTIONS[i]["option3"]}')
+        print(f'\t\tOption 4: {QUESTIONS[i]["option4"]}')
+        print('Enter "quit" if you want to quit the game and take your prize money')
+        ans = input('Your choice ( 1-4 ) : ')
 
-    else:
-        # end the game now.
-        # also print the correct answer
-        print('\nIncorrect !')
+        # check for the input validations
+
+        if ans == 'quit':
+            print("You have QUIT the game")
+            if i == 0:
+                print("You Didn't win Anything, YOU LOSER!!")
+            else:
+                print(f'CONGRATULATIONS!! YOU WIN: {format_currency(QUESTIONS[i-1]["money"], "INR", locale="en_IN")}')
+            break
+
+        if isAnswerCorrect(QUESTIONS[i], int(ans)):
+            # print the total money won.
+            # See if the user has crossed a level, print that if yes
+            print('Correct Answer!')
+            if i == 14:
+                print(f'CONGRATULATIONS!! YOU WIN: {format_currency(QUESTIONS[i]["money"], "INR", locale="en_IN")}')
+                break
+            print(f'Total Prize: {format_currency(QUESTIONS[i]["money"], "INR", locale="en_IN")}')
+
+
+        else:
+            # end the game now.
+            # also print the correct answer
+            print('Incorrect Answer!')
+            print(f'Correct Answer was Option {QUESTIONS[i]["answer"]}')
+            print("\n* * GAME OVER!! * *")
+            if minimum_prize == 0:
+                print("You Didn't win Anything, YOU LOSER!!")
+            else:
+                print(f'CONGRATULATIONS!! YOU WIN: {format_currency(minimum_prize, "INR", locale="en_IN")}')
+            break
 
     # print the total money won in the end.
 
