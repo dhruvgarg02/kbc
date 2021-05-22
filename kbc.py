@@ -86,15 +86,14 @@ def kbc():
         if ans == 'lifeline':
             if life_line == 1:
                 print("You have already used your lifeline!!")
-                i -= 1
-                continue
+                ans = input('Your choice ( 1-4 ) : ')
             elif i == 14:
                 print("You cannot use a Lifeline on 15th question!!")
-                i -= 1
-                continue
+                ans = input('Your choice ( 1-4 ) : ')
             else:
                 lifeline_ques = lifeLine(QUESTIONS[i])
                 life_line = 1
+                print("2 Wrong options are removed!!")
                 print(f'Question {i + 1}: {lifeline_ques["name"]}')
                 print(f'\tOptions:')
                 print(f'\t\tOption 1: {lifeline_ques["option1"]}')
