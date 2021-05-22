@@ -1,6 +1,6 @@
 from questions import QUESTIONS
 from babel.numbers import format_currency
-
+import random
 
 def isAnswerCorrect(question, answer):
     '''
@@ -19,6 +19,14 @@ def lifeLine(ques):
     :param ques: The question for which the lifeline is asked for. (Type JSON)
     :return: delete the key for two incorrect options and return the new ques value. (Type JSON)
     '''
+
+    lifeline_ques = ques
+    options = [i for i in range(1, 5)]
+    options.remove(ques["answer"])
+    random.shuffle(options)
+    lifeline_ques[f'option{options[0]}'] = ""
+    lifeline_ques[f'option{options[1]}'] = ""
+    return lifeline_ques
 
 
 def kbc():
@@ -47,8 +55,8 @@ def kbc():
     #  For each question, display the prize won until now and available life line.
     #  For now, the below code works for only one question without LIFE-LINE and QUIT checks
 
-    prize = 0
     minimum_prize = 0
+    life_line = 0
     print("\t\t\t* * WELCOME TO KBC!! * *")
 
     for i in range(15):
@@ -68,10 +76,33 @@ def kbc():
         print(f'\t\tOption 2: {QUESTIONS[i]["option2"]}')
         print(f'\t\tOption 3: {QUESTIONS[i]["option3"]}')
         print(f'\t\tOption 4: {QUESTIONS[i]["option4"]}')
+        if life_line == 0:
+            print('Enter "lifeline" to use 50-50 lifeline (cannot be used on 15th question)')
         print('Enter "quit" if you want to quit the game and take your prize money')
         ans = input('Your choice ( 1-4 ) : ')
 
         # check for the input validations
+
+        if ans == 'lifeline':
+            if life_line == 1:
+                print("You have already used your lifeline!!")
+                i -= 1
+                continue
+            elif i == 14:
+                print("You cannot use a Lifeline on 15th question!!")
+                i -= 1
+                continue
+            else:
+                lifeline_ques = lifeLine(QUESTIONS[i])
+                life_line = 1
+                print(f'Question {i + 1}: {lifeline_ques["name"]}')
+                print(f'\tOptions:')
+                print(f'\t\tOption 1: {lifeline_ques["option1"]}')
+                print(f'\t\tOption 2: {lifeline_ques["option2"]}')
+                print(f'\t\tOption 3: {lifeline_ques["option3"]}')
+                print(f'\t\tOption 4: {lifeline_ques["option4"]}')
+                print('Enter "quit" if you want to quit the game and take your prize money')
+                ans = input('Your choice ( 1-4 ) : ')
 
         if ans == 'quit':
             print("You have QUIT the game")
